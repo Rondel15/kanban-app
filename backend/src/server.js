@@ -12,8 +12,16 @@ const sprintRoutes   = require('./routes/sprints');
 
 const app = express();
 
+// Strip trailing slash and accept both with and without
+const rawOrigin = (process.env.FRONTEND_URL || '').replace(/\/$/, '');
+
 app.use(cors({
-  origin: process.env.FRONTEND_URL || '*',
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+    const clean = origin.replace(/\/$/, '');
+    if (!rawOrigin || clean === rawOrigin) return callback(null, true);
+    callback(new Error('Not allowed by CORS'));
+  },
   credentials: true,
 }));
 
