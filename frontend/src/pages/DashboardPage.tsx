@@ -123,10 +123,15 @@ export default function DashboardPage() {
     const todayIndex = days.findIndex(d => format(d, 'yyyy-MM-dd') === format(new Date(), 'yyyy-MM-dd'));
     const todayX = todayIndex >= 0 ? xPos(todayIndex) : null;
 
-    // Stats
-    const latestSnap = snapshots[snapshots.length - 1];
-    const remaining = latestSnap ? latestSnap.remaining_tasks : total;
-    const completed = total - remaining;
+    // Stats — use live task counts from columns, not snapshots
+    // This means stat cards update immediately when tasks are moved
+    const liveRemaining = columns
+      .filter(c => c.title.toLowerCase() !== 'done')
+      .reduce((sum, c) => sum + c.tasks.length, 0);
+    const liveDone = columns
+      .find(c => c.title.toLowerCase() === 'done')?.tasks.length ?? 0;
+    const remaining = liveRemaining;
+    const completed = liveDone;
     const daysLeft = Math.max(0, differenceInDays(end, new Date()));
     const isEnded = isPast(end);
 
