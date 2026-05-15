@@ -3,12 +3,43 @@
 @tailwind utilities;
 
 @layer base {
-  body {
-    @apply bg-gray-950 text-gray-100 font-sans antialiased;
+  /* ── Dark theme (default) ── */
+  :root {
+    --bg:             #0a0a0f;
+    --surface:        #111118;
+    --surface-raised: #1a1a24;
+    --surface-overlay:#22222e;
+    --border:         #1f2937;
+    --border-strong:  #374151;
+    --text:           #f3f4f6;
+    --text-muted:     #9ca3af;
+    --text-faint:     #4b5563;
+    --scrollbar:      #374151;
   }
+
+  /* ── Light theme ── */
+  .light {
+    --bg:             #f5f5f7;
+    --surface:        #ffffff;
+    --surface-raised: #f9fafb;
+    --surface-overlay:#f3f4f6;
+    --border:         #e5e7eb;
+    --border-strong:  #d1d5db;
+    --text:           #111827;
+    --text-muted:     #6b7280;
+    --text-faint:     #9ca3af;
+    --scrollbar:      #d1d5db;
+  }
+
+  body {
+    background-color: var(--bg);
+    color: var(--text);
+    @apply font-sans antialiased transition-colors duration-200;
+  }
+
   * {
     scrollbar-width: thin;
-    scrollbar-color: #374151 transparent;
+    scrollbar-color: var(--scrollbar) transparent;
   }
 }
 

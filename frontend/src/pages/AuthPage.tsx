@@ -1,6 +1,7 @@
 import { useState, FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '@/store/useAuthStore';
+import ThemeToggle from '@/components/ThemeToggle';
 
 export default function AuthPage() {
   const [tab, setTab] = useState<'login' | 'register'>('login');
@@ -27,29 +28,33 @@ export default function AuthPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-950 flex items-center justify-center px-4">
+    <div className="min-h-screen flex items-center justify-center px-4" style={{ background: 'var(--bg)' }}>
+      {/* Theme toggle top right */}
+      <div className="fixed top-4 right-4">
+        <ThemeToggle />
+      </div>
+
       <div className="w-full max-w-sm">
-        {/* Logo */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-semibold tracking-tight">
+          <h1 className="text-3xl font-semibold tracking-tight" style={{ color: 'var(--text)' }}>
             <span className="text-brand-400">Kan</span>ban
           </h1>
-          <p className="text-gray-500 text-sm mt-1 font-mono">// collaborative task manager</p>
+          <p className="text-sm mt-1 font-mono" style={{ color: 'var(--text-faint)' }}>// collaborative task manager</p>
         </div>
 
-        {/* Card */}
-        <div className="bg-gray-900 border border-gray-800 rounded-2xl p-8">
+        <div className="rounded-2xl p-8" style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}>
           {/* Tabs */}
-          <div className="flex gap-1 bg-gray-950 p-1 rounded-xl mb-6">
+          <div className="flex gap-1 p-1 rounded-xl mb-6" style={{ background: 'var(--bg)' }}>
             {(['login', 'register'] as const).map(t => (
               <button
                 key={t}
                 onClick={() => { setTab(t); setError(''); }}
-                className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all ${
-                  tab === t
-                    ? 'bg-gray-800 text-white'
-                    : 'text-gray-500 hover:text-gray-300'
-                }`}
+                className="flex-1 py-2 rounded-lg text-sm font-medium transition-all"
+                style={{
+                  background: tab === t ? 'var(--surface-raised)' : 'transparent',
+                  color: tab === t ? 'var(--text)' : 'var(--text-muted)',
+                  border: tab === t ? '1px solid var(--border)' : '1px solid transparent',
+                }}
               >
                 {t}
               </button>
@@ -57,30 +62,29 @@ export default function AuthPage() {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className="block text-xs text-gray-500 uppercase tracking-wider mb-1.5">Username</label>
-              <input
-                type="text"
-                value={username}
-                onChange={e => setUsername(e.target.value)}
-                placeholder="your_username"
-                autoComplete="off"
-                className="w-full bg-gray-950 border border-gray-800 rounded-lg px-3 py-2.5 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-brand-400 transition-colors"
-              />
-            </div>
-            <div>
-              <label className="block text-xs text-gray-500 uppercase tracking-wider mb-1.5">Password</label>
-              <input
-                type="password"
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-                placeholder="••••••••"
-                className="w-full bg-gray-950 border border-gray-800 rounded-lg px-3 py-2.5 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-brand-400 transition-colors"
-              />
-            </div>
+            {['Username', 'Password'].map((label, i) => (
+              <div key={label}>
+                <label className="block text-xs uppercase tracking-wider mb-1.5" style={{ color: 'var(--text-faint)' }}>
+                  {label}
+                </label>
+                <input
+                  type={i === 1 ? 'password' : 'text'}
+                  value={i === 0 ? username : password}
+                  onChange={e => i === 0 ? setUsername(e.target.value) : setPassword(e.target.value)}
+                  placeholder={i === 0 ? 'your_username' : '••••••••'}
+                  autoComplete="off"
+                  className="w-full rounded-lg px-3 py-2.5 text-sm focus:outline-none transition-colors"
+                  style={{
+                    background: 'var(--bg)',
+                    border: '1px solid var(--border)',
+                    color: 'var(--text)',
+                  }}
+                />
+              </div>
+            ))}
 
             {error && (
-              <div className="bg-red-950 border border-red-900 text-red-400 text-sm rounded-lg px-3 py-2">
+              <div className="text-sm rounded-lg px-3 py-2 bg-red-950 border border-red-900 text-red-400">
                 {error}
               </div>
             )}
@@ -88,7 +92,7 @@ export default function AuthPage() {
             <button
               type="submit"
               disabled={loading || !username || !password}
-              className="w-full bg-brand-400 hover:bg-brand-500 disabled:bg-gray-800 disabled:text-gray-600 text-white font-medium py-2.5 rounded-lg transition-colors text-sm mt-2"
+              className="w-full bg-brand-400 hover:bg-brand-500 disabled:opacity-40 text-white font-medium py-2.5 rounded-lg transition-colors text-sm mt-2"
             >
               {loading ? 'connecting...' : tab === 'login' ? 'sign in →' : 'create account →'}
             </button>

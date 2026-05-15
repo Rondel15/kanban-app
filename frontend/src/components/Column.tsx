@@ -24,38 +24,27 @@ export default function Column({ column, onEditTask, onAddTask }: Props) {
   const taskIds = column.tasks.map(t => `task-${t.id}`);
 
   return (
-    <div className="flex-shrink-0 w-72 flex flex-col">
+    <div className="flex-shrink-0 w-72 flex flex-col group/col">
       {/* Column header */}
       <div className="flex items-center justify-between px-1 mb-3">
         <div className="flex items-center gap-2">
-          <span className="font-medium text-sm text-gray-200">{column.title}</span>
-          <span className="text-xs text-gray-600 font-mono bg-gray-900 border border-gray-800 px-1.5 py-0.5 rounded-full">
+          <span className="font-medium text-sm" style={{ color: 'var(--text)' }}>{column.title}</span>
+          <span className="text-xs font-mono px-1.5 py-0.5 rounded-full"
+            style={{ color: 'var(--text-faint)', background: 'var(--surface)', border: '1px solid var(--border)' }}>
             {column.tasks.length}
           </span>
         </div>
-        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100">
+        <div className="opacity-0 group-hover/col:opacity-100 flex items-center gap-1 transition-opacity">
           {confirmDelete ? (
-            <div className="flex items-center gap-1">
-              <button
-                onClick={() => deleteColumn(column.id)}
-                className="text-[10px] text-red-400 hover:text-red-300 font-mono"
-              >
-                confirm
-              </button>
-              <button
-                onClick={() => setConfirmDelete(false)}
-                className="text-[10px] text-gray-600 hover:text-gray-400 font-mono"
-              >
-                cancel
-              </button>
-            </div>
+            <>
+              <button onClick={() => deleteColumn(column.id)}
+                className="text-[10px] text-red-400 hover:text-red-300 font-mono">confirm</button>
+              <button onClick={() => setConfirmDelete(false)}
+                className="text-[10px] font-mono ml-1" style={{ color: 'var(--text-faint)' }}>cancel</button>
+            </>
           ) : (
-            <button
-              onClick={() => setConfirmDelete(true)}
-              className="text-gray-700 hover:text-gray-500 text-xs transition-colors"
-            >
-              ✕
-            </button>
+            <button onClick={() => setConfirmDelete(true)}
+              className="text-xs transition-colors" style={{ color: 'var(--text-faint)' }}>✕</button>
           )}
         </div>
       </div>
@@ -63,9 +52,11 @@ export default function Column({ column, onEditTask, onAddTask }: Props) {
       {/* Drop zone */}
       <div
         ref={setNodeRef}
-        className={`flex-1 flex flex-col gap-2 min-h-[120px] p-2 rounded-xl transition-colors ${
-          isOver ? 'bg-brand-400/5 border border-dashed border-brand-400/30' : 'bg-gray-900/40'
-        }`}
+        className="flex-1 flex flex-col gap-2 min-h-[120px] p-2 rounded-xl transition-colors"
+        style={{
+          background: isOver ? 'rgba(124,106,247,0.05)' : 'var(--surface-raised)',
+          border: isOver ? '1px dashed rgba(124,106,247,0.3)' : '1px solid transparent',
+        }}
       >
         <SortableContext items={taskIds} strategy={verticalListSortingStrategy}>
           {column.tasks.map(task => (
@@ -73,10 +64,18 @@ export default function Column({ column, onEditTask, onAddTask }: Props) {
           ))}
         </SortableContext>
 
-        {/* Add task button */}
         <button
           onClick={() => onAddTask(column.id)}
-          className="mt-1 py-2 rounded-lg border border-dashed border-gray-800 text-gray-700 text-xs hover:border-gray-600 hover:text-gray-500 transition-colors font-mono"
+          className="mt-1 py-2 rounded-lg text-xs border border-dashed transition-colors font-mono"
+          style={{ borderColor: 'var(--border)', color: 'var(--text-faint)' }}
+          onMouseEnter={e => {
+            (e.target as HTMLElement).style.borderColor = 'var(--border-strong)';
+            (e.target as HTMLElement).style.color = 'var(--text-muted)';
+          }}
+          onMouseLeave={e => {
+            (e.target as HTMLElement).style.borderColor = 'var(--border)';
+            (e.target as HTMLElement).style.color = 'var(--text-faint)';
+          }}
         >
           + add task
         </button>

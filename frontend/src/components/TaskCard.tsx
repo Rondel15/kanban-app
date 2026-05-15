@@ -9,6 +9,12 @@ const PRIORITY_STYLES = {
   high:   'bg-red-950 text-red-400 border-red-900',
 };
 
+const PRIORITY_STYLES_LIGHT = {
+  low:    'bg-green-50 text-green-700 border-green-200',
+  medium: 'bg-amber-50 text-amber-700 border-amber-200',
+  high:   'bg-red-50 text-red-700 border-red-200',
+};
+
 interface Props {
   task: Task;
   onEdit: (task: Task) => void;
@@ -27,19 +33,18 @@ export default function TaskCard({ task, onEdit }: Props) {
   };
 
   const isOverdue = task.due_date && isPast(parseISO(task.due_date));
+  const isLight = document.documentElement.classList.contains('light');
+  const priorityStyle = isLight ? PRIORITY_STYLES_LIGHT[task.priority] : PRIORITY_STYLES[task.priority];
 
   return (
     <div
-      ref={setNodeRef}
-      style={style}
-      {...attributes}
-      {...listeners}
+      ref={setNodeRef} style={{ ...style, background: 'var(--surface)', border: '1px solid var(--border)' }}
+      {...attributes} {...listeners}
       onClick={() => onEdit(task)}
-      className="bg-gray-900 border border-gray-800 hover:border-gray-700 rounded-xl p-3.5 cursor-pointer group transition-all select-none"
+      className="rounded-xl p-3.5 cursor-pointer group transition-all select-none hover:border-[var(--border-strong)]"
     >
-      {/* Priority badge */}
       <div className="flex items-center justify-between mb-2">
-        <span className={`text-[10px] font-mono px-2 py-0.5 rounded-full border ${PRIORITY_STYLES[task.priority]}`}>
+        <span className={`text-[10px] font-mono px-2 py-0.5 rounded-full border ${priorityStyle}`}>
           {task.priority}
         </span>
         {task.assignee_username && (
@@ -49,17 +54,15 @@ export default function TaskCard({ task, onEdit }: Props) {
         )}
       </div>
 
-      {/* Title */}
-      <p className="text-sm text-gray-200 leading-snug mb-2">{task.title}</p>
+      <p className="text-sm leading-snug mb-2" style={{ color: 'var(--text)' }}>{task.title}</p>
 
-      {/* Description preview */}
       {task.description && (
-        <p className="text-xs text-gray-600 line-clamp-2 mb-2">{task.description}</p>
+        <p className="text-xs line-clamp-2 mb-2" style={{ color: 'var(--text-faint)' }}>{task.description}</p>
       )}
 
-      {/* Due date */}
       {task.due_date && (
-        <div className={`text-[10px] font-mono mt-1 ${isOverdue ? 'text-red-400' : 'text-gray-600'}`}>
+        <div className={`text-[10px] font-mono mt-1 ${isOverdue ? 'text-red-400' : ''}`}
+          style={!isOverdue ? { color: 'var(--text-faint)' } : {}}>
           {isOverdue ? '⚠ overdue · ' : ''}
           {format(parseISO(task.due_date), 'MMM d')}
         </div>
