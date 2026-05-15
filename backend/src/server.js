@@ -11,8 +11,16 @@ const taskRoutes     = require('./routes/tasks');
 
 const app = express();
 
+const allowedOrigin = (process.env.FRONTEND_URL || '').replace(/\/$/, '');
+
 app.use(cors({
-  origin: process.env.FRONTEND_URL || '*',
+  origin: (origin, callback) => {
+    if (!origin || !allowedOrigin || origin === allowedOrigin) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
 }));
 
