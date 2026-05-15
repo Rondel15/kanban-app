@@ -8,19 +8,12 @@ const authRoutes     = require('./routes/auth');
 const projectRoutes  = require('./routes/projects');
 const columnRoutes   = require('./routes/columns');
 const taskRoutes     = require('./routes/tasks');
+const sprintRoutes   = require('./routes/sprints');
 
 const app = express();
 
-const allowedOrigin = (process.env.FRONTEND_URL || '').replace(/\/$/, '');
-
 app.use(cors({
-  origin: (origin, callback) => {
-    if (!origin || !allowedOrigin || origin === allowedOrigin) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
+  origin: process.env.FRONTEND_URL || '*',
   credentials: true,
 }));
 
@@ -36,6 +29,7 @@ app.use('/auth',     authRoutes);
 app.use('/projects', projectRoutes);
 app.use('/projects', columnRoutes);  // /projects/:projectId/columns
 app.use('/tasks',    taskRoutes);
+app.use('/projects', sprintRoutes);
 
 app.get('/health', (_req, res) => res.json({ status: 'ok' }));
 

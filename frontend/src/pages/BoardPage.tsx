@@ -107,8 +107,8 @@ export default function BoardPage() {
       {/* Header */}
       <header className="flex-shrink-0" style={{ background: 'var(--surface)', borderBottom: '1px solid var(--border)' }}>
         <div className="px-6 h-14 flex items-center gap-4">
-          <button onClick={() => navigate('/')} className="text-sm transition-colors" style={{ color: 'var(--text-faint)' }}>
-            ← projects
+          <button onClick={() => navigate(`/projects/${projectId}`)} className="text-sm transition-colors" style={{ color: 'var(--text-faint)' }}>
+            ← dashboard
           </button>
           <div className="h-4 w-px" style={{ background: 'var(--border)' }} />
           <h1 className="font-semibold text-sm truncate" style={{ color: 'var(--text)' }}>{project?.name ?? '...'}</h1>
