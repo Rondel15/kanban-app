@@ -138,7 +138,7 @@ export default function DashboardPage() {
     const uniqueLabels = [...new Set(labelIndices)];
 
     return { days, idealPoints, actualPoints, todayX, remaining, completed, daysLeft,
-             isEnded, total, xPos, yPos, W, H, padL, padB, padT, uniqueLabels };
+             isEnded, total, xPos, yPos, W, H, padL, padB, padT, padR, uniqueLabels };
   }
 
   const bd = buildBurndown();
